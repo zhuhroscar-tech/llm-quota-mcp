@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llm-quota-mcp"
+version = "0.1.0"
+description = "Track remaining LLM API token/rate-limit quota and reset times (Anthropic, OpenAI, Hermes) — as a CLI and as an MCP server any agent platform can call."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "zhuhroscar-tech" }]
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.31",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+mcp = ["mcp>=1.2.0"]
+dev = ["pytest>=7.4", "responses>=0.24", "mcp>=1.2.0"]
+
+[project.scripts]
+llm-quota = "llm_quota.cli:main"
+llm-quota-mcp = "llm_quota.mcp_server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
