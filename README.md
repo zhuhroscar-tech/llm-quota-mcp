@@ -1,5 +1,17 @@
 # llm-quota-mcp
 
+[![CI](https://github.com/zhuhroscar-tech/llm-quota-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/zhuhroscar-tech/llm-quota-mcp/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)
+
+## Simple explanation
+
+llm-quota-mcp tells you how much of your AI API usage limit is left
+before you get rate-limited or cut off — for Anthropic, OpenAI, and
+Hermes Agent's own local usage tracking. Point it at your API key (or
+nothing, for Hermes) and it reports remaining requests/tokens and when
+the limit resets, so an agent (or you) can slow down before hitting a
+wall instead of after.
+
 Check how much LLM API quota you have left — and how much you've already
 used — from **any** agent platform: an MCP-compatible host (Claude
 Desktop, Hermes Agent, Cursor, etc.), a plain Python script, or the
