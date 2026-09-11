@@ -69,24 +69,14 @@ pip install -e ".[dev]"
 
 ## CLI usage
 
+![llm-quota-mcp example output](docs/images/example-output.png)
+
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
 llm-quota anthropic
-# provider: anthropic
-#   requests: {'limit': 50, 'remaining': 49, 'reset_raw': '...', 'reset_at': '...'}
-#   input_tokens: {...}
-#   output_tokens: {...}
-#   ...
-
-export OPENAI_API_KEY=sk-...
-llm-quota openai --json
-
-# Optional: real usage/cost totals (needs an Admin API key, not a project key)
-llm-quota openai --admin-api-key sk-admin-... --json
 
 # No API key needed — reads what Hermes Agent already tracked locally:
 llm-quota hermes --newer-than 24h
-llm-quota hermes --session-id <session-id>
 ```
 
 ## As an MCP "plugin" for a running bot
