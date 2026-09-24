@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "llm-quota-mcp"
-version = "0.1.1"
+version = "0.1.2"
 description = "Track remaining LLM API token/rate-limit quota and reset times (Anthropic, OpenAI, Hermes) — as a CLI and as an MCP server any agent platform can call."
 readme = "README.md"
 license = "MIT"

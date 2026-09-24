@@ -88,7 +88,9 @@ def test_hermes_usage_aggregates_multiple_records(monkeypatch):
 
     import llm_quota.hermes as hermes_mod
 
-    monkeypatch.setattr(hermes_mod, "_run_hermes_export", lambda args, timeout=30.0: records)
+    monkeypatch.setattr(
+        hermes_mod, "_run_hermes_export", lambda args, timeout=30.0: records
+    )
     usage = get_hermes_usage(newer_than="7d")
     assert usage.sessions_included == 2
     assert usage.input_tokens == 300
@@ -98,3 +100,32 @@ def test_hermes_usage_aggregates_multiple_records(monkeypatch):
     assert usage.actual_cost_usd == pytest.approx(0.019)
     assert usage.started_at == "2026-01-01T00:00:00Z"
     assert usage.last_activity_at == "2026-01-02T00:05:00Z"
+
+
+def test_hermes_usage_normalizes_epoch_timestamps(monkeypatch):
+    records = [
+        {
+            "id": "older",
+            "input_tokens": 1,
+            "started_at": 1767225600.0,
+            "last_activity_at": 1767225900.0,
+        },
+        {
+            "id": "newer",
+            "input_tokens": 2,
+            "started_at": 1767312000.0,
+            "last_activity_at": 1767312300.0,
+        },
+    ]
+
+    import llm_quota.hermes as hermes_mod
+
+    monkeypatch.setattr(
+        hermes_mod, "_run_hermes_export", lambda args, timeout=30.0: records
+    )
+
+    usage = get_hermes_usage()
+    assert usage.session_id == "newer"
+    assert usage.started_at == "2026-01-02T00:00:00+00:00"
+    assert usage.last_activity_at == "2026-01-02T00:05:00+00:00"
+    assert usage.to_dict()["started_at"] == "2026-01-02T00:00:00+00:00"

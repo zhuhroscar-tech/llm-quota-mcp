@@ -22,7 +22,7 @@ import shutil
 import subprocess
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import List, Optional
+from typing import Any, List, Optional
 
 
 @dataclass
@@ -123,6 +123,31 @@ def _run_hermes_export(args: List[str], timeout: float = 30.0) -> List[dict]:
     return records
 
 
+def _normalize_timestamp(value: Any) -> Optional[str]:
+    """Return Hermes timestamp values as UTC ISO-8601 strings.
+
+    `hermes sessions export` has emitted both Unix epoch numbers and ISO strings
+    across versions/surfaces. Keep the public llm-quota JSON stable rather than
+    leaking mixed raw types through `started_at` / `last_activity_at`.
+    """
+    if value is None or value == "":
+        return None
+    if isinstance(value, (int, float)):
+        return datetime.fromtimestamp(value, tz=timezone.utc).isoformat()
+    if isinstance(value, str):
+        try:
+            numeric = float(value)
+        except ValueError:
+            return value
+        return datetime.fromtimestamp(numeric, tz=timezone.utc).isoformat()
+    return str(value)
+
+
+def _timestamp_sort_key(value: Any) -> str:
+    normalized = _normalize_timestamp(value)
+    return normalized or ""
+
+
 def get_hermes_usage(
     session_id: Optional[str] = None,
     newer_than: Optional[str] = None,
@@ -150,7 +175,9 @@ def get_hermes_usage(
     if not session_id and not newer_than:
         # Most-recently-active single session only.
         records = sorted(
-            records, key=lambda r: r.get("last_activity_at") or "", reverse=True
+            records,
+            key=lambda r: _timestamp_sort_key(r.get("last_activity_at")),
+            reverse=True,
         )[:1]
 
     usage = HermesUsage(sessions_included=len(records))
@@ -172,10 +199,12 @@ def get_hermes_usage(
             est_costs.append(rec["estimated_cost_usd"])
         if rec.get("actual_cost_usd") is not None:
             act_costs.append(rec["actual_cost_usd"])
-        if rec.get("started_at"):
-            started_ats.append(rec["started_at"])
-        if rec.get("last_activity_at"):
-            last_activities.append(rec["last_activity_at"])
+        started_at = _normalize_timestamp(rec.get("started_at"))
+        if started_at:
+            started_ats.append(started_at)
+        last_activity_at = _normalize_timestamp(rec.get("last_activity_at"))
+        if last_activity_at:
+            last_activities.append(last_activity_at)
 
     if len(records) == 1:
         usage.session_id = records[0].get("id")
