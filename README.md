@@ -70,4 +70,4 @@ pip install -e ".[dev]"
 pytest -v
 ```
 
-Provider tests mock HTTP; live account behavior is not established by those tests. Hermes integration coverage depends on an available compatible CLI. [MIT license](LICENSE).
+Provider tests mock HTTP; live account behavior is not established by those tests. Hermes integration coverage depends on an available compatible CLI. See [release history](CHANGELOG.md). [MIT license](LICENSE).

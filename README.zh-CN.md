@@ -70,4 +70,4 @@ pip install -e ".[dev]"
 pytest -v
 ```
 
-服务商测试使用模拟 HTTP，不能据此认定真实账户行为已验证；Hermes 集成测试取决于是否存在兼容 CLI。[MIT 许可证](LICENSE)。
+服务商测试使用模拟 HTTP，不能据此认定真实账户行为已验证；Hermes 集成测试取决于是否存在兼容 CLI。参见[发布历史](CHANGELOG.md)。[MIT 许可证](LICENSE)。

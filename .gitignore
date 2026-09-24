@@ -5,6 +5,7 @@ __pycache__/
 .venv/
 venv/
 dist/
+dist_*/
 build/
 .coverage
 .ruff_cache/

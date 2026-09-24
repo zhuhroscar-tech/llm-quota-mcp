@@ -1,0 +1,8 @@
+include CHANGELOG.md
+include LICENSE
+include README.md
+include README.zh-CN.md
+include pyproject.toml
+recursive-include .github/workflows *.yml
+recursive-include docs *.mp4 *.png
+recursive-include tests *.py
